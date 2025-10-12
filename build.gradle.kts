@@ -5,4 +5,5 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     id("com.google.gms.google-services") version "4.4.3" apply false
     alias(libs.plugins.android.library) apply false
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.0" apply false
 }
