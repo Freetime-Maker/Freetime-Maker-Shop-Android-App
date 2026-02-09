@@ -2,9 +2,9 @@ package com.freetime.domain.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.freetime.domain.model.Product
-import com.freetime.domain.model.ProductCategory
-import com.freetime.domain.model.Platform
+import com.freetime.domain.model.Wallpaper
+import com.freetime.domain.model.WallpaperCategory
+import com.freetime.domain.model.Resolution
 import com.freetime.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,17 +18,17 @@ class ProductViewModel(
     private val _uiState = MutableStateFlow<ProductUIState>(ProductUIState.Loading)
     val uiState: StateFlow<ProductUIState> = _uiState.asStateFlow()
     
-    private val _products = MutableStateFlow<List<Product>>(emptyList())
-    val products: StateFlow<List<Product>> = _products.asStateFlow()
+    private val _products = MutableStateFlow<List<Wallpaper>>(emptyList())
+    val products: StateFlow<List<Wallpaper>> = _products.asStateFlow()
     
-    private val _filteredProducts = MutableStateFlow<List<Product>>(emptyList())
-    val filteredProducts: StateFlow<List<Product>> = _filteredProducts.asStateFlow()
+    private val _filteredProducts = MutableStateFlow<List<Wallpaper>>(emptyList())
+    val filteredProducts: StateFlow<List<Wallpaper>> = _filteredProducts.asStateFlow()
     
-    private val _selectedCategory = MutableStateFlow<ProductCategory?>(null)
-    val selectedCategory: StateFlow<ProductCategory?> = _selectedCategory.asStateFlow()
+    private val _selectedCategory = MutableStateFlow<WallpaperCategory?>(null)
+    val selectedCategory: StateFlow<WallpaperCategory?> = _selectedCategory.asStateFlow()
     
-    private val _selectedPlatform = MutableStateFlow<Platform?>(null)
-    val selectedPlatform: StateFlow<Platform?> = _selectedPlatform.asStateFlow()
+    private val _selectedPlatform = MutableStateFlow<Resolution?>(null)
+    val selectedPlatform: StateFlow<Resolution?> = _selectedPlatform.asStateFlow()
     
     init {
         loadProducts()
@@ -40,10 +40,10 @@ class ProductViewModel(
                 _uiState.value = ProductUIState.Loading
                 val result = productRepository.getProducts()
                 if (result.isSuccess) {
-                    val products = result.getOrNull() ?: emptyList()
-                    _products.value = products
-                    _filteredProducts.value = products
-                    _uiState.value = ProductUIState.Success(products)
+                    val wallpapers = result.getOrNull() ?: emptyList()
+                    _products.value = wallpapers
+                    _filteredProducts.value = wallpapers
+                    _uiState.value = ProductUIState.Success(wallpapers)
                 } else {
                     _uiState.value = ProductUIState.Error(result.exceptionOrNull()?.message ?: "Failed to load products")
                 }
@@ -53,12 +53,12 @@ class ProductViewModel(
         }
     }
     
-    fun filterByCategory(category: ProductCategory?) {
+    fun filterByCategory(category: WallpaperCategory?) {
         _selectedCategory.value = category
         applyFilters()
     }
     
-    fun filterByPlatform(platform: Platform?) {
+    fun filterByPlatform(platform: Resolution?) {
         _selectedPlatform.value = platform
         applyFilters()
     }
@@ -73,16 +73,16 @@ class ProductViewModel(
         val category = _selectedCategory.value
         val platform = _selectedPlatform.value
         
-        val filtered = _products.value.filter { product ->
-            val categoryMatch = category == null || product.category == category
-            val platformMatch = platform == null || product.platform == platform || product.platform == Platform.ALL
+        val filtered = _products.value.filter { wallpaper ->
+            val categoryMatch = category == null || wallpaper.category == category
+            val platformMatch = platform == null || wallpaper.resolution == platform
             categoryMatch && platformMatch
         }
         
         _filteredProducts.value = filtered
     }
     
-    fun getProductById(id: String): Product? {
+    fun getProductById(id: String): Wallpaper? {
         return _products.value.find { it.id == id }
     }
     
@@ -93,6 +93,6 @@ class ProductViewModel(
 
 sealed class ProductUIState {
     object Loading : ProductUIState()
-    data class Success(val products: List<Product>) : ProductUIState()
+    data class Success(val wallpapers: List<Wallpaper>) : ProductUIState()
     data class Error(val message: String) : ProductUIState()
 }

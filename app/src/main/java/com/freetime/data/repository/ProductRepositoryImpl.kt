@@ -1,10 +1,10 @@
 package com.freetime.data.repository
 
-import com.freetime.domain.model.Product
+import com.freetime.domain.model.Wallpaper
 import com.freetime.domain.model.CartItem
 import com.freetime.domain.model.Order
 import com.freetime.domain.model.OrderStatus
-import com.freetime.domain.model.SampleProducts
+import com.freetime.domain.model.SampleWallpapers
 import com.freetime.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,37 +17,37 @@ class ProductRepositoryImpl : ProductRepository {
     private val _cartItems = MutableStateFlow<List<CartItem>>(emptyList())
     private val _orders = MutableStateFlow<List<Order>>(emptyList())
     
-    override suspend fun getProducts(): Result<List<Product>> {
-        return Result.success(SampleProducts.products)
+    override suspend fun getProducts(): Result<List<Wallpaper>> {
+        return Result.success(SampleWallpapers.wallpapers)
     }
     
-    override suspend fun getProductById(id: String): Result<Product?> {
-        val product = SampleProducts.products.find { it.id == id }
-        return Result.success(product)
+    override suspend fun getProductById(id: String): Result<Wallpaper?> {
+        val wallpaper = SampleWallpapers.wallpapers.find { it.id == id }
+        return Result.success(wallpaper)
     }
     
-    override suspend fun getProductsByCategory(category: com.freetime.domain.model.ProductCategory): Result<List<Product>> {
-        val filteredProducts = SampleProducts.products.filter { it.category == category }
-        return Result.success(filteredProducts)
+    override suspend fun getProductsByCategory(category: com.freetime.domain.model.WallpaperCategory): Result<List<Wallpaper>> {
+        val filteredWallpapers = SampleWallpapers.wallpapers.filter { it.category == category }
+        return Result.success(filteredWallpapers)
     }
     
-    override suspend fun getProductsByPlatform(platform: com.freetime.domain.model.Platform): Result<List<Product>> {
-        val filteredProducts = SampleProducts.products.filter { it.platform == platform }
-        return Result.success(filteredProducts)
+    override suspend fun getProductsByPlatform(platform: com.freetime.domain.model.Resolution): Result<List<Wallpaper>> {
+        val filteredWallpapers = SampleWallpapers.wallpapers.filter { it.resolution == platform }
+        return Result.success(filteredWallpapers)
     }
     
     override fun getCartItems(): Flow<List<CartItem>> = _cartItems.asStateFlow()
     
-    override suspend fun addToCart(product: Product, quantity: Int): Result<Unit> {
+    override suspend fun addToCart(wallpaper: Wallpaper, quantity: Int): Result<Unit> {
         return try {
             val currentCart = _cartItems.value.toMutableList()
-            val existingItemIndex = currentCart.indexOfFirst { it.product.id == product.id }
+            val existingItemIndex = currentCart.indexOfFirst { it.wallpaper.id == wallpaper.id }
             
             if (existingItemIndex >= 0) {
                 val existingItem = currentCart[existingItemIndex]
                 currentCart[existingItemIndex] = existingItem.copy(quantity = existingItem.quantity + quantity)
             } else {
-                currentCart.add(CartItem(product, quantity))
+                currentCart.add(CartItem(wallpaper, quantity))
             }
             
             _cartItems.value = currentCart
@@ -57,10 +57,10 @@ class ProductRepositoryImpl : ProductRepository {
         }
     }
     
-    override suspend fun removeFromCart(productId: String): Result<Unit> {
+    override suspend fun removeFromCart(wallpaperId: String): Result<Unit> {
         return try {
             val currentCart = _cartItems.value.toMutableList()
-            currentCart.removeAll { it.product.id == productId }
+            currentCart.removeAll { it.wallpaper.id == wallpaperId }
             _cartItems.value = currentCart
             Result.success(Unit)
         } catch (e: Exception) {
@@ -68,14 +68,14 @@ class ProductRepositoryImpl : ProductRepository {
         }
     }
     
-    override suspend fun updateCartQuantity(productId: String, quantity: Int): Result<Unit> {
+    override suspend fun updateCartQuantity(wallpaperId: String, quantity: Int): Result<Unit> {
         return try {
             if (quantity <= 0) {
-                return removeFromCart(productId)
+                return removeFromCart(wallpaperId)
             }
             
             val currentCart = _cartItems.value.toMutableList()
-            val itemIndex = currentCart.indexOfFirst { it.product.id == productId }
+            val itemIndex = currentCart.indexOfFirst { it.wallpaper.id == wallpaperId }
             
             if (itemIndex >= 0) {
                 val item = currentCart[itemIndex]
@@ -100,7 +100,7 @@ class ProductRepositoryImpl : ProductRepository {
     
     override suspend fun createOrder(items: List<CartItem>, customerEmail: String): Result<Order> {
         return try {
-            val totalAmount = items.sumOf { it.product.price * it.quantity }
+            val totalAmount = items.sumOf { it.wallpaper.price * it.quantity }
             val order = Order(
                 id = UUID.randomUUID().toString(),
                 items = items,
@@ -129,7 +129,7 @@ class ProductRepositoryImpl : ProductRepository {
     }
     
     override suspend fun getCartTotal(): Result<Double> {
-        val total = _cartItems.value.sumOf { it.product.price * it.quantity }
+        val total = _cartItems.value.sumOf { it.wallpaper.price * it.quantity }
         return Result.success(round(total * 100) / 100)
     }
 }
