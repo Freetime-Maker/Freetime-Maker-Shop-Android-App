@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.koin.androidx.compose.koinViewModel
-import com.freetime.domain.model.Product
+import com.freetime.domain.model.Wallpaper
 import com.freetime.domain.viewmodel.CartViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,24 +27,26 @@ fun ProductDetailScreen(
     cartViewModel: CartViewModel = koinViewModel()
 ) {
     // This would typically come from a ProductViewModel
-    // For now, we'll use a sample product or get it from repository
-    var product by remember { mutableStateOf<Product?>(null) }
+    // For now, we'll use a sample wallpaper or get it from repository
+    var wallpaper by remember { mutableStateOf<Wallpaper?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var quantity by remember { mutableStateOf(1) }
     
     LaunchedEffect(productId) {
         // In a real app, you'd get this from ProductViewModel
-        // For demo purposes, we'll create a sample product
+        // For demo purposes, we'll create a sample wallpaper
         isLoading = false
-        product = Product(
+        wallpaper = Wallpaper(
             id = productId,
-            title = "Sample Product",
-            description = "This is a sample product description. It would contain details about the product features, specifications, and other relevant information.",
-            price = 25.0,
-            category = com.freetime.domain.model.ProductCategory.GAMES,
-            platform = com.freetime.domain.model.Platform.ANDROID,
-            purchaseUrl = "https://freetimemaker.github.io/Freetime-Maker-Shop/",
-            features = listOf("Feature 1", "Feature 2", "Feature 3")
+            title = "Sample Wallpaper",
+            description = "This is a sample wallpaper description. It would contain details about the wallpaper style, resolution, and visual characteristics.",
+            price = 4.99,
+            category = com.freetime.domain.model.WallpaperCategory.ABSTRACT,
+            resolution = com.freetime.domain.model.Resolution.UHD_4K,
+            imageUrl = "https://picsum.photos/800/600?random=1",
+            downloadUrl = "https://freetimemaker.github.io/Freetime-Maker-Shop/download/",
+            fileSize = 8547328,
+            tags = listOf("abstract", "colorful", "modern")
         )
     }
     
@@ -57,12 +59,12 @@ fun ProductDetailScreen(
                 CircularProgressIndicator()
             }
         }
-        product == null -> {
+        wallpaper == null -> {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Product not found")
+                Text("Wallpaper not found")
             }
         }
         else -> {
@@ -72,7 +74,7 @@ fun ProductDetailScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 TopAppBar(
-                    title = { Text(product!!.title) },
+                    title = { Text(wallpaper!!.title) },
                     navigationIcon = {
                         IconButton(
                             onClick = { navController.navigateUp() }
@@ -98,7 +100,7 @@ fun ProductDetailScreen(
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    // Product Image Placeholder
+                    // Wallpaper Image Placeholder
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -109,7 +111,7 @@ fun ProductDetailScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "Product Image",
+                                text = "Wallpaper Preview",
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -118,7 +120,7 @@ fun ProductDetailScreen(
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
-                    // Product Title and Price
+                    // Wallpaper Title and Price
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -128,7 +130,7 @@ fun ProductDetailScreen(
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
-                                text = product!!.title,
+                                text = wallpaper!!.title,
                                 style = MaterialTheme.typography.headlineMedium,
                                 fontWeight = FontWeight.Bold
                             )
@@ -136,25 +138,25 @@ fun ProductDetailScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             
                             Text(
-                                text = "$${product!!.price}",
+                                text = "$${wallpaper!!.price}",
                                 style = MaterialTheme.typography.headlineSmall,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         }
                         
-                        // Category and Platform badges
+                        // Category and Resolution badges
                         Column {
                             SuggestionChip(
                                 onClick = { },
-                                label = { Text(product!!.category.name.replace("_", " ")) }
+                                label = { Text(wallpaper!!.category.name.replace("_", " ")) }
                             )
                             
                             Spacer(modifier = Modifier.height(4.dp))
                             
                             SuggestionChip(
                                 onClick = { },
-                                label = { Text(product!!.platform.name) }
+                                label = { Text(wallpaper!!.resolution.name.replace("_", " ")) }
                             )
                         }
                     }
@@ -171,35 +173,46 @@ fun ProductDetailScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     Text(
-                        text = product!!.description,
+                        text = wallpaper!!.description,
                         style = MaterialTheme.typography.bodyMedium
                     )
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
-                    // Features
-                    if (product!!.features.isNotEmpty()) {
+                    // Tags
+                    if (wallpaper!!.tags.isNotEmpty()) {
                         Text(
-                            text = "Features",
+                            text = "Tags",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
                         
                         Spacer(modifier = Modifier.height(8.dp))
                         
-                        product!!.features.forEach { feature ->
-                            Row(
-                                modifier = Modifier.padding(vertical = 4.dp)
-                            ) {
-                                Text(
-                                    text = "• $feature",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
+                        wallpaper!!.tags.forEach { tag ->
+                            SuggestionChip(
+                                onClick = { },
+                                label = { Text(tag) },
+                                modifier = Modifier.padding(end = 8.dp, bottom = 4.dp)
+                            )
                         }
                         
                         Spacer(modifier = Modifier.height(16.dp))
                     }
+                    
+                    // File Info
+                    Text(
+                        text = "File Information",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    Text(
+                        text = "File Size: ${wallpaper!!.fileSize / (1024 * 1024)} MB",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                     
                     // Quantity Selector
                     Text(
@@ -243,29 +256,29 @@ fun ProductDetailScreen(
                     // Add to Cart Button
                     Button(
                         onClick = {
-                            product?.let { 
+                            wallpaper?.let { 
                                 cartViewModel.addToCart(it, quantity)
                                 navController.navigate("cart")
                             }
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Add to Cart - $${product!!.price * quantity}")
+                        Text("Add to Cart - $${wallpaper!!.price * quantity}")
                     }
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
-                    // Buy Now Button
-                    OutlinedButton(
+                    // Download Button
+                    Button(
                         onClick = {
-                            product?.let { 
+                            wallpaper?.let { 
                                 cartViewModel.addToCart(it, quantity)
                                 navController.navigate("checkout")
                             }
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Buy Now")
+                        Text("Download Now - $${wallpaper!!.price * quantity}")
                     }
                 }
             }

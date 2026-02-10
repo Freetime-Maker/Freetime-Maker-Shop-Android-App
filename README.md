@@ -11,5 +11,5 @@ It does not use Webview, instead it uses my own Payment SDK [Freetime SDK](https
 </div>
 
 - [x] Integrate FreetimeSDK
+- [x] Change the Products to something more Useful instead of Apps and Games
 - [ ] Make it Functionable
-- [ ] Change the Products to something more Useful instead of Apps and Games

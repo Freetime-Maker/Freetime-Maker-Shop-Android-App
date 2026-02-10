@@ -20,6 +20,8 @@ import org.koin.androidx.compose.koinViewModel
 import com.freetime.domain.model.Product
 import com.freetime.domain.model.ProductCategory
 import com.freetime.domain.model.Platform
+import com.freetime.domain.model.Wallpaper
+import com.freetime.domain.model.WallpaperCategory
 import com.freetime.domain.viewmodel.ProductViewModel
 import com.freetime.domain.viewmodel.ProductUIState
 
@@ -155,15 +157,22 @@ fun HomeScreen(navController: NavController, viewModel: ProductViewModel = koinV
 
 @Composable
 fun CategoryFilter(
-    selectedCategory: ProductCategory?,
-    onCategorySelected: (ProductCategory?) -> Unit
+    selectedCategory: WallpaperCategory?,
+    onCategorySelected: (WallpaperCategory?) -> Unit
 ) {
-    val categories = listOf(
+    val categories: List<Pair<WallpaperCategory?, String>> = listOf(
         null to "All",
-        ProductCategory.GAMES to "Games",
-        ProductCategory.CLICKER_GAMES to "Clicker Games",
-        ProductCategory.BUNDLES to "Bundles",
-        ProductCategory.UTILITIES to "Utilities"
+        WallpaperCategory.ABSTRACT to "Abstract",
+        WallpaperCategory.NATURE to "Nature",
+        WallpaperCategory.CITYSCAPE to "Cityscape",
+        WallpaperCategory.MINIMALIST to "Minimalist",
+        WallpaperCategory.TECHNOLOGY to "Technology",
+        WallpaperCategory.ARTISTIC to "Artistic",
+        WallpaperCategory.SPACE to "Space",
+        WallpaperCategory.ANIMALS to "Animals",
+        WallpaperCategory.VINTAGE to "Vintage",
+        WallpaperCategory.GEOMETRIC to "Geometric",
+        WallpaperCategory.CAT to "Cat"
     )
     
     LazyRow(
@@ -171,7 +180,7 @@ fun CategoryFilter(
         contentPadding = PaddingValues(horizontal = 4.dp)
     ) {
         items(categories.size) { index ->
-            val (category, name) = categories[index]
+            val (category, name) = categories[index] as Pair<WallpaperCategory, String>
             FilterChip(
                 selected = selectedCategory == category,
                 onClick = { onCategorySelected(category) },
@@ -186,7 +195,7 @@ fun PlatformFilter(
     selectedPlatform: Platform?,
     onPlatformSelected: (Platform?) -> Unit
 ) {
-    val platforms = listOf(
+    val platforms: List<Pair<Platform?, String>> = listOf(
         null to "All",
         Platform.ANDROID to "Android",
         Platform.WINDOWS to "Windows",
@@ -198,7 +207,7 @@ fun PlatformFilter(
         contentPadding = PaddingValues(horizontal = 4.dp)
     ) {
         items(platforms.size) { index ->
-            val (platform, name) = platforms[index]
+            val (platform, name) = platforms[index] as Pair<Platform, String>
             FilterChip(
                 selected = selectedPlatform == platform,
                 onClick = { onPlatformSelected(platform) },
@@ -210,7 +219,7 @@ fun PlatformFilter(
 
 @Composable
 fun ProductCard(
-    product: Product,
+    wallpaper: Wallpaper,
     onProductClick: () -> Unit,
     onAddToCart: () -> Unit
 ) {
@@ -228,7 +237,7 @@ fun ProductCard(
         ) {
             Column {
                 Text(
-                    text = product.title,
+                    text = wallpaper.title,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2
@@ -237,7 +246,7 @@ fun ProductCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 
                 Text(
-                    text = product.category.name.replace("_", " "),
+                    text = wallpaper.category.name.replace("_", " "),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -245,7 +254,7 @@ fun ProductCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 
                 Text(
-                    text = product.platform.name,
+                    text = wallpaper.resolution.name,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.secondary
                 )
@@ -253,7 +262,7 @@ fun ProductCard(
             
             Column {
                 Text(
-                    text = "$${product.price}",
+                    text = "$${wallpaper.price}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
