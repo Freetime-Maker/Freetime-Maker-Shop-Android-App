@@ -41,7 +41,7 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
-    implementation("com.github.FreetimeMaker:FreetimeSDK:v1.0.4")
+    implementation("com.github.FreetimeMaker:FreetimeSDK:v1.0.5")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
