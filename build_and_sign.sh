@@ -2,12 +2,12 @@
 set -e
 
 ### CONFIG ###
-APP_ID="com.freetime.geoweather"
-TAG="v1.2.8"   # <-- HIER deine Version eintragen
-KEYSTORE="$HOME/AndroidStudioProjects/GeoWeather/GeoWeather-KeyStore.jks"
+APP_ID="com.freetime.shop"
+TAG="v1.0.0"   # <-- HIER deine Version eintragen
+KEYSTORE="$HOME/AndroidStudioProjects/Freetime-Maker-Shop-Android-App/FMS.jks"
 KEY_ALIAS="alle"
 KEY_PASS="KKKKKK"
-OUT_APK="GeoWeather-$TAG.apk"
+OUT_APK="FMS-$TAG.apk"
 ################
 
 echo "==> Erstelle Tag $TAG"

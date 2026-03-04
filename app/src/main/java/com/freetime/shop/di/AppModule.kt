@@ -8,6 +8,7 @@ import com.freetime.domain.usecase.CheckoutUseCase
 import com.freetime.domain.viewmodel.CartViewModel
 import com.freetime.domain.viewmodel.CheckoutViewModel
 import com.freetime.domain.viewmodel.ProductViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -17,7 +18,7 @@ val AppModule = module {
     single<ProductRepository> { ProductRepositoryImpl() }
     
     // Payment Manager
-    single<FreetimePaymentManager> { FreetimePaymentManagerImpl() }
+    single<FreetimePaymentManager> { FreetimePaymentManagerImpl(androidContext()) }
     
     // Use Cases
     single { CheckoutUseCase(get(), get()) }

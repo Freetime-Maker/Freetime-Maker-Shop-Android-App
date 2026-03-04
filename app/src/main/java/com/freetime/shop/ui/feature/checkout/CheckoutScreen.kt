@@ -15,6 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.koin.androidx.compose.koinViewModel
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import com.freetime.domain.viewmodel.CartViewModel
 import com.freetime.domain.viewmodel.CheckoutViewModel
 import com.freetime.domain.viewmodel.CheckoutUIState
@@ -240,6 +242,23 @@ fun CheckoutScreen(
                 
                 Spacer(modifier = Modifier.height(8.dp))
                 
+                OutlinedButton(
+                    onClick = {
+                        val encodedEmail = URLEncoder.encode(
+                            emailInput,
+                            StandardCharsets.UTF_8.toString()
+                        )
+                        // Aktuell nutzen wir BTC als Standard-Kryptowährung
+                        navController.navigate("payment/$cartTotal/BTC/$encodedEmail")
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isProcessing && emailInput.isNotBlank()
+                ) {
+                    Text("Pay with Crypto Wallet")
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 OutlinedButton(
                     onClick = { navController.navigateUp() },
                     modifier = Modifier.fillMaxWidth(),

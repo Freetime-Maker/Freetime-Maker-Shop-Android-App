@@ -1,1 +1,5 @@
-- Added App to F-Droid
+- Initial release of the Freetime Maker Shop Android app
+- Browse and purchase digital wallpapers
+- Integrated crypto payment flow via FreetimeSDK with external wallet support
+- Added product catalog and shopping cart
+- Enabled crypto payments using FreetimeSDK and external wallet apps

@@ -19,7 +19,11 @@ import com.freetime.shop.ui.feature.product.ProductDetailScreen
 import com.freetime.shop.ui.feature.cart.CartScreen
 import com.freetime.shop.ui.feature.checkout.CheckoutScreen
 import com.freetime.shop.ui.feature.order.OrderSuccessScreen
+import com.freetime.ui.payment.PaymentScreen
+import com.freetime.domain.payment.FreetimePaymentManager
 import com.freetime.shop.ui.theme.FreetimeMakerShopTheme
+import org.koin.compose.koinInject
+import java.util.UUID
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +48,29 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("order_success") {
                         OrderSuccessScreen(navController)
+                    }
+                    composable("payment/{amount}/{currency}/{email}") { backStackEntry ->
+                        val amount = backStackEntry.arguments?.getString("amount")?.toDoubleOrNull() ?: 0.0
+                        val currency = backStackEntry.arguments?.getString("currency") ?: "USD"
+                        val email = backStackEntry.arguments?.getString("email") ?: ""
+                        val paymentManager: FreetimePaymentManager = koinInject()
+
+                        PaymentScreen(
+                            paymentManager = paymentManager,
+                            amount = amount,
+                            currency = currency,
+                            orderId = UUID.randomUUID().toString(),
+                            customerEmail = email,
+                            description = "Order from Freetime Maker Shop",
+                            onPaymentComplete = {
+                                navController.navigate("order_success") {
+                                    popUpTo("home") { inclusive = false }
+                                }
+                            },
+                            onPaymentError = {
+                                // Hier könntest du später einen Snackbar/Dialog zeigen
+                            }
+                        )
                     }
                 }
             }

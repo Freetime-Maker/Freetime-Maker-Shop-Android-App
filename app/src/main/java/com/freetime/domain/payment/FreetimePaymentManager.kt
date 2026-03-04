@@ -35,6 +35,9 @@ interface FreetimePaymentManager {
         customerEmail: String,
         description: String
     ): Result<PaymentRequestWithWalletSelection>
+
+    // Unterstützte Kryptowährungen dynamisch aus dem SDK
+    suspend fun getSupportedCryptocurrencies(): List<String>
 }
 
 data class PaymentSession(

@@ -217,10 +217,11 @@ class FreetimePaymentManagerImpl(private val context: Context) : FreetimePayment
                 paymentId = paymentRequest.id,
                 amount = amount,
                 currency = currency,
-                merchantId = "freetime_maker_shop",
+                merchantId = "freetime_maker",
                 customerEmail = customerEmail,
                 description = description,
-                paymentUrl = "https://freetimemaker.github.io/Freetime-Maker-Shop/payment/${paymentRequest.id}",
+                // Keine externe Website nötig – wir speichern nur die ID-informativ
+                paymentUrl = "Payment ID: ${paymentRequest.id}",
                 expiresAt = paymentRequest.expiresAt,
                 status = PaymentStatus.PENDING
             )
@@ -365,7 +366,7 @@ class FreetimePaymentManagerImpl(private val context: Context) : FreetimePayment
         }
     }
 
-    suspend fun getSupportedCryptocurrencies(): List<String> {
+    override suspend fun getSupportedCryptocurrencies(): List<String> {
         return getSupportedCryptosFromSDK().keys.toList().sorted()
     }
 
@@ -433,10 +434,11 @@ class FreetimePaymentManagerImpl(private val context: Context) : FreetimePayment
                 paymentId = paymentId,
                 amount = amount,
                 currency = currency,
-                merchantId = "freetime_maker_shop",
+                merchantId = "freetime_maker",
                 customerEmail = customerEmail,
                 description = description,
-                paymentUrl = "https://freetimemaker.github.io/Freetime-Maker-Shop/payment/$paymentId",
+                // Optional: lokaler Hinweis statt echter URL
+                paymentUrl = "Payment ID: $paymentId",
                 expiresAt = System.currentTimeMillis() + (30 * 60 * 1000),
                 status = PaymentStatus.PENDING
             )

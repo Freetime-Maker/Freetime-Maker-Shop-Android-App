@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.freetime.domain.payment.*
+import kotlinx.coroutines.launch
 
 @Composable
 fun PaymentScreen(
@@ -25,9 +26,24 @@ fun PaymentScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(false) }
     var showWalletSelection by remember { mutableStateOf(false) }
     var paymentRequestWithWallet by remember { mutableStateOf<PaymentRequestWithWalletSelection?>(null) }
+    var supportedCurrencies by remember { mutableStateOf<List<String>>(emptyList()) }
+    var selectedCurrency by remember { mutableStateOf(currency) }
+
+    LaunchedEffect(Unit) {
+        val cryptos = try {
+            paymentManager.getSupportedCryptocurrencies()
+        } catch (e: Exception) {
+            emptyList()
+        }
+        supportedCurrencies = if (cryptos.isNotEmpty()) cryptos else listOf(selectedCurrency)
+        if (!supportedCurrencies.contains(selectedCurrency)) {
+            selectedCurrency = supportedCurrencies.first()
+        }
+    }
     
     Column(
         modifier = modifier
@@ -57,17 +73,60 @@ fun PaymentScreen(
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
-                    Text("Amount: $amount $currency")
+                    Text("Amount: $amount $selectedCurrency")
                     Text("Order ID: $orderId")
                     Text("Description: $description")
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    if (supportedCurrencies.size > 1) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "Currency:",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium
+                            )
+                            TextButton(
+                                onClick = {
+                                    val idx = supportedCurrencies.indexOf(selectedCurrency).takeIf { it >= 0 } ?: 0
+                                    val nextIndex = (idx + 1) % supportedCurrencies.size
+                                    selectedCurrency = supportedCurrencies[nextIndex]
+                                }
+                            ) {
+                                Text(selectedCurrency)
+                            }
+                        }
+                    }
                     
                     Spacer(modifier = Modifier.height(24.dp))
                     
                     Button(
                         onClick = {
                             isLoading = true
-                            // Create payment with wallet selection
-                            // This would be called from a coroutine in real implementation
+                            scope.launch {
+                                val result = paymentManager.createPaymentWithWalletSelection(
+                                    amount = amount,
+                                    currency = selectedCurrency,
+                                    orderId = orderId,
+                                    customerEmail = customerEmail,
+                                    description = description
+                                )
+
+                                if (result.isSuccess) {
+                                    paymentRequestWithWallet = result.getOrNull()
+                                    showWalletSelection = true
+                                } else {
+                                    isLoading = false
+                                    onPaymentError(
+                                        result.exceptionOrNull()?.message
+                                            ?: "Failed to create payment."
+                                    )
+                                }
+                            }
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -84,8 +143,39 @@ fun PaymentScreen(
             wallets = paymentRequestWithWallet!!.availableWallets,
             onWalletSelected = { wallet ->
                 isLoading = true
-                // Generate deep link and open wallet
-                // This would be handled in a coroutine
+                scope.launch {
+                    val session = paymentRequestWithWallet!!.paymentSession
+                    val deepLinkResult = paymentManager.generatePaymentDeepLink(
+                        walletApp = wallet,
+                        paymentSession = session
+                    )
+
+                    if (deepLinkResult.isSuccess) {
+                        val deepLink = deepLinkResult.getOrNull()
+                        if (!deepLink.isNullOrBlank()) {
+                            openDeepLink(context, deepLink)
+                            onPaymentComplete(
+                                PaymentResult(
+                                    paymentId = session.paymentId,
+                                    status = PaymentStatus.PENDING,
+                                    amount = session.amount,
+                                    currency = session.currency,
+                                    processedAt = System.currentTimeMillis()
+                                )
+                            )
+                        } else {
+                            onPaymentError("Failed to generate payment deep link.")
+                        }
+                    } else {
+                        onPaymentError(
+                            deepLinkResult.exceptionOrNull()?.message
+                                ?: "Failed to generate payment deep link."
+                        )
+                    }
+
+                    isLoading = false
+                    showWalletSelection = false
+                }
             },
             onDismiss = {
                 showWalletSelection = false

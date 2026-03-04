@@ -1,42 +1,31 @@
-GeoWeather - Your Modern Weather App for Android
+Freetime Maker Shop – Your Digital Wallpaper Store with Crypto Payments
 
-Experience an intuitive weather application inspired by the Swiss MeteoSwiss app. GeoWeather provides you with precise weather information for multiple cities with an elegant user interface.
+Discover the official Android app of the Freetime Maker Shop. Browse a curated selection of high‑quality digital wallpapers, add your favorites to the cart and purchase them securely using modern cryptocurrency wallets – powered by the FreetimeSDK.
 
 🌟 KEY FEATURES:
 
-🏙️ MULTIPLE CITIES
-- Add unlimited cities to your list
-- Quick switching between different locations
-- Personal favorites list
+🖼️ PREMIUM WALLPAPERS
+- Hand-picked high‑resolution wallpapers
+- Different styles and categories
+- Optimized for modern Android devices
 
-📅 7-DAY FORECAST
-- Detailed weather predictions for the entire week
-- Temperature trends and precipitation probability
-- Wind speed and humidity information
+🛒 SIMPLE SHOPPING EXPERIENCE
+- Intuitive shop interface
+- Add and remove items from your cart
+- Clear order overview before checkout
 
-⏰ HOURLY UPDATES
-- Precise weather data on an hourly basis
-- Optimal planning for your day
-- Real-time updates for weather changes
+💰 CRYPTO PAYMENTS WITH FREETIMESDK
+- Pay with supported cryptocurrencies via FreetimeSDK
+- Deep‑link integration to external wallet apps
+- Secure payment sessions and status handling
 
-🎨 VISUAL REPRESENTATION
-- Beautiful weather icons for every condition
-- Clear and comprehensive graphics
-- Modern Material Design interface
-
-🔔 SMART NOTIFICATIONS
-- Weather alerts for your locations
-- Personal notification settings
-- Daily weather summaries
-
-💳 DONATION FEATURE
-- Support continued development
-- Integrated FreetimeSDK for secure payments
-- Voluntary support for open source
+📩 DIGITAL DELIVERY
+- Orders linked to your email address
+- Information about purchased items directly in the app
 
 🛠️ MODERN TECHNOLOGY
-- Developed with Jetpack Compose for smooth performance
-- Native Android development with Kotlin
-- Regular updates and new features
+- Built with Jetpack Compose for a smooth and modern UI
+- Native Android app written in Kotlin
+- Regular improvements and new features planned
 
-Perfect for daily weather checks, travel planning, or simply staying informed. Download GeoWeather now and experience weather in a whole new way!
+Download the Freetime Maker Shop app now and support the project while enjoying unique digital wallpapers and modern crypto payment options.

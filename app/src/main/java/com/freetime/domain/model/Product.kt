@@ -81,7 +81,7 @@ object SampleWallpapers {
             category = WallpaperCategory.CAT,
             resolution = Resolution.MOBILE,
             imageUrl = "https://images.unsplash.com/photo-1720064921203-22ba396237c2?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8TW9iaWxlJTIwV2FsbHBhcGVyJTIwS2F0emV8ZW58MHx8MHx8fDA%3D",
-            downloadUrl = "file:///android_asset/wallpapers/black_cat.jpg",
+            downloadUrl = "https://1024terabox.com/s/1i7NtDzduOsy47_LRtfOHhg",
             fileSize = 588093,
             tags = listOf("cat", "black", "black cat")
         )
